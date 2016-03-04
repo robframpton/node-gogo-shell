@@ -1,0 +1,17 @@
+{
+  "name": "liferay-gogo-shell",
+  "version": "0.0.0",
+  "description": "A Node wrapper for communicating with Liferay's OSGi environment",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test/**/*.js"
+  },
+  "keywords": [
+    "gogo",
+    "liferay",
+    "osgi",
+    "telnet"
+  ],
+  "author": "Rob Frampton <rob.g.frampton@gmail.com> (https://github.com/Robert-Frampton)",
+  "license": "ISC"
+}
