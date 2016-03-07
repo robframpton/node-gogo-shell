@@ -13,5 +13,13 @@
     "telnet"
   ],
   "author": "Rob Frampton <rob.g.frampton@gmail.com> (https://github.com/Robert-Frampton)",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.3.3",
+    "lodash": "^4.6.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5"
+  }
 }
