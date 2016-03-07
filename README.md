@@ -1,21 +1,21 @@
-# liferay-gogo-shell
+# gogo-shell
 
-> A Node wrapper for communicating with Liferay's OSGi environment
+> A Node wrapper for sending Gogo commands to an OSGi environment
 
 
 ## Install
 
 ```
-$ npm install --save liferay-gogo-shell
+$ npm install --save gogo-shell
 ```
 
 
 ## Usage
 
-Note: a local instance of Liferay must be running before invoking the connect method, otherwise a connection error will thrown.
+Note: a Gogo shell must be running before invoking the connect method, otherwise a connection error will thrown.
 
 ```js
-var GogoShell = require('liferay-gogo-shell');
+var GogoShell = require(gogo-shell');
 
 var gogoShell = new GogoShell();
 
@@ -38,7 +38,7 @@ The `GogoShell` constructor can be passed the same configuration options as the 
 
 ### connect([options])
 
-Connects to a TCP server which allows you to send Gogo OSGi commands to a Liferay instance. Returns a Promise which resolves when the server is ready to receive commands.
+Connects to a TCP server which allows you to send Gogo commands to an OSGi environment. Returns a Promise which resolves when the server is ready to receive commands.
 
 #### options
 
@@ -50,13 +50,12 @@ Default: `127.0.0.1`
 ##### port
 
 Type: `number`
-Default: `11311`
 
 See [socket.connect](https://nodejs.org/api/net.html#net_socket_connect_options_connectlistener) method for other options and their default values.
 
 ### sendCommand(command)
 
-Sends command to a Liferay instance's OSGi environment. Returns a Promise that resolves with the response data.
+Sends Gogo command to an OSGi environment. Returns a Promise that resolves with the response data.
 
 #### options
 
@@ -64,6 +63,6 @@ Sends command to a Liferay instance's OSGi environment. Returns a Promise that r
 
 Type: 'string'
 
-The command that will be sent to the OSGi environment.
+The Gogo command that will be sent to the OSGi environment.
 
 MIT

@@ -9,8 +9,7 @@ var Promise = require('bluebird');
 var Socket = net.Socket;
 
 var DEFAULT_CONNECT_CONFIG = {
-	host: '127.0.0.1',
-	port: 11311
+	host: '127.0.0.1'
 };
 
 var STR_DATA = 'data';

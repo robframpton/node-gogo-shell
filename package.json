@@ -1,14 +1,13 @@
 {
-  "name": "liferay-gogo-shell",
+  "name": "gogo-shell",
   "version": "0.0.0",
-  "description": "A Node wrapper for communicating with Liferay's OSGi environment",
+  "description": "A Node wrapper for sending Gogo commands to an OSGi environment",
   "main": "index.js",
   "scripts": {
     "test": "mocha test/**/*.js"
   },
   "keywords": [
     "gogo",
-    "liferay",
     "osgi",
     "telnet"
   ],
