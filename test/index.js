@@ -144,6 +144,20 @@ describe('GogoShell', function() {
 					stopGogo(done);
 				});
 		});
+
+		it('should join arguments to create command string', function(done) {
+			startGogo({
+				port: 1337
+			}, true)
+				.then(function() {
+					return gogoShell.sendCommand('joined', 'arguments', 'command', '--test');
+				})
+				.then(function(data) {
+					assert.equal(data, 'joined arguments data\ng! ');
+
+					done();
+				});
+		})
 	});
 
 	var helpCommandData = 'command - command that does something\n' +
@@ -192,6 +206,9 @@ describe('GogoShell', function() {
 							'gogo:format\n' +
 							'gogo:getopt\n' +
 							'g! ');
+					}
+					else if (data.indexOf('joined arguments command --test') > -1) {
+						socket.write('joined arguments data\ng! ');
 					}
 					else {
 						socket.write(defaultResponseData);

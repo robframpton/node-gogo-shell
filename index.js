@@ -53,6 +53,10 @@ GogoShell.prototype = _.create(Socket.prototype, {
 	sendCommand: function(command) {
 		var instance = this;
 
+		if (arguments.length > 1) {
+			command = _.join(arguments, ' ');
+		}
+
 		return new Promise(function(resolve, reject) {
 			if (instance.active) {
 				reject(new Error('Only one command can be sent at a time. "' + instance.currentCommand + '" hasn\'t finished.'));

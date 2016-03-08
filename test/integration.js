@@ -35,7 +35,7 @@ describe('GogoShell - Liferay integeration', function() {
 	it('should return list of installed packages', function(done) {
 		if (!checkConnection()) return done();
 
-		gogoShell.sendCommand('lb -s')
+		gogoShell.sendCommand('lb', '-s')
 			.then(function(data) {
 				assert(data);
 
