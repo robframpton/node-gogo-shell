@@ -2,5 +2,8 @@
 * No changes
 ***
 
+## v0.0.2 - March 7, 2016
+* Optimized code example formatting for npm page
+
 ## v0.0.1 - March 7, 2016
 * Initial publish
