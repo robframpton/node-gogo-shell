@@ -20,16 +20,16 @@ var GogoShell = require('gogo-shell');
 var gogoShell = new GogoShell();
 
 gogoShell.connect({
-		port: 11311
-	})
-	.then(function() {
-		return gogoShell.sendCommand('lb');
-	})
-	.then(function(data) {
-		// Do something with response data
+    port: 11311
+  })
+  .then(function() {
+    return gogoShell.sendCommand('lb');
+  })
+  .then(function(data) {
+    // Do something with response data
 
-		gogoShell.end();
-	});
+    gogoShell.end();
+  });
 
 ```
 
@@ -67,11 +67,11 @@ var GogoShell = require('gogo-shell');
 var gogoShell = new GogoShell();
 
 gogoShell.connect({
-		port: 11311
-	})
-	.then(function() {
-		// gogoShell.sendCommand(...);
-	});
+    port: 11311
+  })
+  .then(function() {
+    // gogoShell.sendCommand(...);
+  });
 ```
 
 
@@ -91,16 +91,16 @@ The Gogo command to retieve help info for.
 
 ```js
 gogoShell.help()
-	.then(function(data) {
-		// data = array of available commands
-	});
+  .then(function(data) {
+    // data = array of available commands
+  });
 ```
 
 ```js
 gogoShell.help('install')
-	.then(function(data) {
-		// data = object literal containing api information for specified command
-	});
+  .then(function(data) {
+    // data = object literal containing api information for specified command
+  });
 ```
 
 
@@ -126,9 +126,9 @@ Additional parameters, flags, and options that will be joined with the command a
 
 ```js
 gogoShell.sendCommand('lb', '-s')
-	.then(function(data) {
-		// data = list of installed bundles with symbolic name
-	});
+  .then(function(data) {
+    // data = list of installed bundles with symbolic name
+  });
 ```
 
 Chaining commands.
@@ -139,22 +139,22 @@ var GogoShell = require('gogo-shell');
 var gogoShell = new GogoShell();
 
 gogoShell.connect({
-		port: 11311
-	})
-	.then(function() {
-		return gogoShell.sendCommand('lb');
-	})
-	.then(function(data) {
-		// data = response from 'lb'
+    port: 11311
+  })
+  .then(function() {
+    return gogoShell.sendCommand('lb');
+  })
+  .then(function(data) {
+    // data = response from 'lb'
 
-		return gogoShell.sendCommand('another command');
-	})
-	.then(function(data) {
-		// data = response from 'another command'
+    return gogoShell.sendCommand('another command');
+  })
+  .then(function(data) {
+    // data = response from 'another command'
 
-		// Using socket.end for closing connection, otherwise Node process wouldn't end
-		gogoShell.end();
-	})
+    // Using socket.end for closing connection, otherwise Node process wouldn't end
+    gogoShell.end();
+  });
 ```
 
 
