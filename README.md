@@ -19,18 +19,19 @@ var GogoShell = require('gogo-shell');
 
 var gogoShell = new GogoShell();
 
-gogoShell.connect({
+var config = {
     port: 11311
-  })
-  .then(function() {
-    return gogoShell.sendCommand('lb');
-  })
-  .then(function(data) {
-    // Do something with response data
+};
 
-    gogoShell.end();
-  });
+gogoShell.connect(config)
+    .then(function() {
+        return gogoShell.sendCommand('lb');
+    })
+    .then(function(data) {
+        // Do something with response data
 
+        gogoShell.end();
+    });
 ```
 
 
@@ -47,14 +48,16 @@ Connects to a TCP server which allows you to send Gogo commands to an OSGi envir
 
 #### options
 
+Type: `object`
+
 ##### host
 
-Type: `string`
+Type: `string`<br>
 Default: `127.0.0.1`
 
 ##### port
 
-Type: `number`
+Type: `number`<br>
 Required: `true`
 
 See [socket.connect](https://nodejs.org/api/net.html#net_socket_connect_options_connectlistener) method for other options and their default values.
@@ -66,20 +69,20 @@ var GogoShell = require('gogo-shell');
 
 var gogoShell = new GogoShell();
 
-gogoShell.connect({
+var config = {
     port: 11311
-  })
-  .then(function() {
-    // gogoShell.sendCommand(...);
-  });
+};
+
+gogoShell.connect(config)
+    .then(function() {
+        // gogoShell.sendCommand(...);
+    });
 ```
 
 
 ### help([command])
 
 Returns Promise that resolves with array of available commands, or object literal containing information on specified command.
-
-#### options
 
 ##### command
 
@@ -91,24 +94,22 @@ The Gogo command to retieve help info for.
 
 ```js
 gogoShell.help()
-  .then(function(data) {
-    // data = array of available commands
-  });
+    .then(function(data) {
+        // data = array of available commands
+    });
 ```
 
 ```js
 gogoShell.help('install')
-  .then(function(data) {
-    // data = object literal containing api information for specified command
-  });
+    .then(function(data) {
+        // data = object literal containing api information for specified command
+    });
 ```
 
 
 ### sendCommand(command, [options])
 
 Sends Gogo command to an OSGi environment. Returns a Promise that resolves with the response data.
-
-#### options
 
 ##### command
 
@@ -126,9 +127,9 @@ Additional parameters, flags, and options that will be joined with the command a
 
 ```js
 gogoShell.sendCommand('lb', '-s')
-  .then(function(data) {
-    // data = list of installed bundles with symbolic name
-  });
+    .then(function(data) {
+        // data = list of installed bundles with symbolic name
+    });
 ```
 
 Chaining commands.
@@ -138,23 +139,25 @@ var GogoShell = require('gogo-shell');
 
 var gogoShell = new GogoShell();
 
-gogoShell.connect({
+var config = {
     port: 11311
-  })
-  .then(function() {
-    return gogoShell.sendCommand('lb');
-  })
-  .then(function(data) {
-    // data = response from 'lb'
+};
 
-    return gogoShell.sendCommand('another command');
-  })
-  .then(function(data) {
-    // data = response from 'another command'
+gogoShell.connect(config)
+    .then(function() {
+        return gogoShell.sendCommand('lb');
+    })
+    .then(function(data) {
+        // data = response from 'lb'
 
-    // Using socket.end for closing connection, otherwise Node process wouldn't end
-    gogoShell.end();
-  });
+        return gogoShell.sendCommand('another command');
+    })
+    .then(function(data) {
+        // data = response from 'another command'
+
+        // Using socket.end for closing connection, otherwise Node process wouldn't end
+        gogoShell.end();
+    });
 ```
 
 
