@@ -23,10 +23,12 @@ gogoShell.connect({
 		port: 11311
 	})
 	.then(function() {
-		return gogoShell.sendCommand('some', 'gogo', 'command');
+		return gogoShell.sendCommand('lb');
 	})
 	.then(function(data) {
 		// Do something with response data
+
+		gogoShell.end();
 	});
 
 ```
