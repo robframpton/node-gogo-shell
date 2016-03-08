@@ -2,6 +2,9 @@
 * No changes
 ***
 
+## v0.0.3 - March 7, 2016
+* Updated package.json
+
 ## v0.0.2 - March 7, 2016
 * Optimized code example formatting for npm page
 
