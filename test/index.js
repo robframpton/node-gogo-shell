@@ -50,6 +50,41 @@ describe('GogoShell', function() {
 		});
 	});
 
+	describe('help', function() {
+		it('should return array of available gogo commands', function(done) {
+			startGogo({
+				port: 1337
+			}, true)
+				.then(function() {
+					return gogoShell.help();
+				})
+				.then(function(data) {
+					assert.deepEqual(data, ['gogo:echo', 'gogo:format', 'gogo:getopt']);
+
+					stopGogo(done);
+				});
+		});
+
+		it('should parse and return info on specific command', function(done) {
+			startGogo({
+				port: 1337
+			}, true)
+				.then(function() {
+					return gogoShell.help('command');
+				})
+				.then(function(data) {
+					assert(!_.isUndefined(data.raw));
+					assert.equal(data.command, 'command');
+					assert.equal(data.description, 'command - command that does something');
+					assert.equal(data.flags.length, 2);
+					assert.equal(data.parameters.length, 1);
+					assert.equal(data.scope, 'obr');
+
+					stopGogo(done);
+				});
+		});
+	});
+
 	describe('sendCommand', function() {
 		it('should return correct data from server as Promise', function(done) {
 			startGogo({
@@ -111,6 +146,14 @@ describe('GogoShell', function() {
 		});
 	});
 
+	var helpCommandData = 'command - command that does something\n' +
+		'  scope: obr\n' +
+		'  flags:\n' +
+		'    -f, --flag   does something\n' +
+		'    -o, --otherflag   does something else\n' +
+		'  parameters:\n' +
+		'    String[]   ( <this> | <that> | <the-other> )[@<version>] ...\ng! ';
+
 	function assertAsyncData(data) {
 		assert.equal(data, 'chunk 1\nchunk 2\ndata\ng! ');
 	}
@@ -140,6 +183,15 @@ describe('GogoShell', function() {
 						setTimeout(function() {
 							socket.write(defaultResponseData);
 						}, 300);
+					}
+					else if (data.indexOf('help command') > -1) {
+						socket.write(helpCommandData);
+					}
+					else if (data.indexOf('help') > -1) {
+						socket.write('gogo:echo\n' +
+							'gogo:format\n' +
+							'gogo:getopt\n' +
+							'g! ');
 					}
 					else {
 						socket.write(defaultResponseData);

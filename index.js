@@ -41,6 +41,15 @@ GogoShell.prototype = _.create(Socket.prototype, {
 		});
 	},
 
+	help: function(command) {
+		var parser = command ? this._parseHelpCommandData : this._parseHelpData;
+
+		return this.sendCommand(command ? 'help ' + command : 'help')
+			.then(function(data) {
+				return parser(data, command);
+			});
+	},
+
 	sendCommand: function(command) {
 		var instance = this;
 
@@ -54,10 +63,33 @@ GogoShell.prototype = _.create(Socket.prototype, {
 
 			instance.on(STR_DATA, instance._getCommandDataListener(resolve));
 
-			command = !_.endsWith(command, STR_NEWLINE) ? command : command + STR_NEWLINE;
+			command = _.endsWith(command, STR_NEWLINE) ? command : command + STR_NEWLINE;
 
 			instance.write(command);
 		});
+	},
+
+	_getCommandDataListener: function(resolve) {
+		var instance = this;
+
+		var dataBuffer = [];
+
+		var dataListener = function(data) {
+			data = data.toString();
+
+			dataBuffer.push(data);
+
+			if (data.match(/g\!/)) {
+				instance.removeListener(STR_DATA, dataListener);
+
+				instance.active = false;
+				instance.currentCommand = null;
+
+				resolve(dataBuffer.join(''));
+			}
+		};
+
+		return dataListener;
 	},
 
 	_onConnect: function() {
@@ -82,27 +114,45 @@ GogoShell.prototype = _.create(Socket.prototype, {
 		this.write(new Buffer([255, 250, 24, 0, 86, 84, 50, 50, 48, 255, 240]));
 	},
 
-	_getCommandDataListener: function(resolve) {
-		var instance = this;
+	_parseHelpCommandData: function(data, command) {
+		var currentGroup;
+		var groupRegex = /(flags|options|parameters|scope):\s*(\S*)/;
 
-		var dataBuffer = [];
-
-		var dataListener = function(data) {
-			data = data.toString();
-
-			dataBuffer.push(data);
-
-			if (data.match(/g\!/)) {
-				instance.removeListener(STR_DATA, dataListener);
-
-				instance.active = false;
-				instance.currentCommand = null;
-
-				resolve(dataBuffer.join(''));
+		return _.reduce(data.split(STR_NEWLINE), function(result, line, index) {
+			if (index == 0) {
+				result.description = line;
+				result.raw = data;
 			}
-		};
+			else if (groupRegex.test(line)) {
+				var match = line.match(groupRegex);
 
-		return dataListener;
+				currentGroup = match[1];
+
+				if (match[2]) {
+					result[currentGroup] = match[2];
+				}
+				else {
+					result[currentGroup] = [];
+				}
+			}
+			else if (currentGroup && line.indexOf('g!') < 0) {
+				result[currentGroup].push(_.trim(line));
+			}
+
+			return result;
+		}, {
+			command: command
+		});
+	},
+
+	_parseHelpData: function(data) {
+		return _.reduce(data.split(STR_NEWLINE), function(commands, line, index) {
+			if (line.indexOf('g!') < 0) {
+				commands.push(_.trim(line));
+			}
+
+			return commands;
+		}, []);
 	}
 });
 
