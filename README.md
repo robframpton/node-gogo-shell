@@ -131,4 +131,31 @@ gogoShell.sendCommand('lb', '-s')
 	});
 ```
 
+Chaining commands.
+
+```js
+var GogoShell = require('gogo-shell');
+
+var gogoShell = new GogoShell();
+
+gogoShell.connect({
+		port: 11311
+	})
+	.then(function() {
+		return gogoShell.sendCommand('lb');
+	})
+	.then(function(data) {
+		// data = response from 'lb'
+
+		return gogoShell.sendCommand('another command');
+	})
+	.then(function(data) {
+		// data = response from 'another command'
+
+		// Using socket.end for closing connection, otherwise Node process wouldn't end
+		gogoShell.end();
+	})
+```
+
+
 MIT
