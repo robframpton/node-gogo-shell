@@ -1,6 +1,9 @@
 ## Next Release
-* New: added debug option to constructor for printing all commands and response data to stdout
+* No changes
 ***
+
+## v0.0.4 - March 9, 2016
+* New: added debug option to constructor for printing all commands and response data to stdout
 
 ## v0.0.3 - March 7, 2016
 * Updated package.json
