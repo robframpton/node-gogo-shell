@@ -1,6 +1,6 @@
 {
   "name": "gogo-shell",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A Node wrapper for sending Gogo commands to an OSGi environment",
   "license": "MIT",
   "main": "index.js",
