@@ -39,8 +39,29 @@ gogoShell.connect(config)
 
 GogoShell is an instance of [net.Socket](https://nodejs.org/api/net.html#net_class_net_socket) and inherits all it's properties, methods, and events.
 
-The `GogoShell` constructor can be passed the same configuration options as the [net.Socket constructor](https://nodejs.org/api/net.html#net_new_net_socket_options).
+### new GogoShell([options])
 
+#### options
+
+Type: `object`
+
+The `GogoShell` constructor can also be passed the same configuration options as the [net.Socket constructor](https://nodejs.org/api/net.html#net_new_net_socket_options).
+
+##### debug
+
+type: `boolean`<br>
+
+If set to true, prints all commands sent to the server, and all response data from the server to stdout.
+
+#### examples
+
+```js
+var GogoShell = require('gogo-shell');
+
+var gogoShell = new GogoShell({
+    debug: true
+});
+```
 
 ### connect([options])
 

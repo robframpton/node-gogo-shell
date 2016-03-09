@@ -17,7 +17,11 @@ var STR_DATA = 'data';
 var STR_NEWLINE = '\n';
 
 var GogoShell = function(config) {
+	config = config || {};
+
 	Socket.call(this, config);
+
+	this.debug = config.debug || false;
 
 	this.init();
 };
@@ -112,6 +116,12 @@ GogoShell.prototype = _.create(Socket.prototype, {
 		};
 
 		this.on(STR_DATA, dataListener);
+
+		if (this.debug) {
+			this.on(STR_DATA, function(data) {
+				process.stdout.write(data.toString());
+			});
+		}
 
 		this.write(new Buffer([255, 251, 24]));
 
