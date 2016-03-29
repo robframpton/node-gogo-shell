@@ -5,6 +5,7 @@ var chai = require('chai');
 var GogoShell = require('../index.js');
 var net = require('net');
 var path = require('path');
+var sinon = require('sinon');
 
 var assert = chai.assert;
 
@@ -123,6 +124,7 @@ describe('GogoShell', function() {
 
 		it('should be able to chain commands', function(done) {
 			startGogo({
+				debug: true,
 				port: 1337
 			}, true)
 				.then(function() {
@@ -155,9 +157,30 @@ describe('GogoShell', function() {
 				.then(function(data) {
 					assert.equal(data, 'joined arguments data\ng! ');
 
-					done();
+					stopGogo(done);
 				});
-		})
+		});
+
+		it('should format command string with newline character', function(done) {
+			startGogo({
+				port: 1337
+			}, true)
+				.then(function() {
+					gogoShell.write = sinon.spy();
+
+					gogoShell.sendCommand('some command');
+
+					assert(gogoShell.write.getCall(0).calledWith('some command\n'), 'added newline character');
+
+					gogoShell.active = false;
+
+					gogoShell.sendCommand('another command\n');
+
+					assert(gogoShell.write.getCall(1).calledWith('another command\n'), 'did not add newline character');
+
+					stopGogo(done);
+				});
+		});
 	});
 
 	var helpCommandData = 'command - command that does something\n' +
@@ -185,7 +208,11 @@ describe('GogoShell', function() {
 			gogoServer = net.createServer(function(socket) {
 				socket.on('data', function(data) {
 					if (_.isEqual(data, handshakeBuffer)) {
-						socket.write('Welcome to Apache Felix Gogo\n\ng! ');
+						socket.write('Welcome to Apache Felix Gogo\n');
+
+						setTimeout(function() {
+							socket.write('\ng! ');
+						}, 100);
 					}
 					else if (data.indexOf('async') > -1) {
 						socket.write('chunk 1\n');
@@ -222,7 +249,9 @@ describe('GogoShell', function() {
 			});
 		}
 
-		gogoShell = new GogoShell();
+		gogoShell = new GogoShell({
+			debug: config.debug
+		});
 
 		return gogoShell.connect(config);
 	}
