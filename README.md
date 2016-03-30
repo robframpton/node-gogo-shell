@@ -1,4 +1,4 @@
-# gogo-shell
+# gogo-shell [![Build Status](https://travis-ci.org/Robert-Frampton/node-gogo-shell.svg?branch=master)](https://travis-ci.org/Robert-Frampton/node-gogo-shell) [![Coverage Status](https://coveralls.io/repos/github/Robert-Frampton/node-gogo-shell/badge.svg?branch=master)](https://coveralls.io/github/Robert-Frampton/node-gogo-shell?branch=master)
 
 > A Node wrapper for sending Gogo commands to an OSGi environment
 
