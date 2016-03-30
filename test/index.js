@@ -13,16 +13,22 @@ describe('GogoShell', function() {
 	var gogoServer;
 	var gogoShell;
 
+	after(function() {
+		gogoServer.close();
+	});
+
 	describe('connect', function() {
 		it('should return connection error', function(done) {
 			startGogo({
 				port: 1234
-			});
+			}, true);
 
 			gogoShell.on('error', function(err) {
 				assert.equal(err.code, 'ECONNREFUSED');
-				assert.equal(err.address, '127.0.0.1');
-				assert.equal(err.port, 1234);
+
+				if (err.port) {
+					assert.equal(err.port, 1234);
+				}
 
 				stopGogo(done);
 			});
@@ -192,7 +198,7 @@ describe('GogoShell', function() {
 		'    String[]   ( <this> | <that> | <the-other> )[@<version>] ...\ng! ';
 
 	function assertAsyncData(data) {
-		assert.equal(data, 'chunk 1\nchunk 2\ndata\ng! ');
+		assert.equal(data, 'chunk 1\ndata\ng! ');
 	}
 
 	function assertDefaultData(data) {
@@ -200,13 +206,17 @@ describe('GogoShell', function() {
 	}
 
 	function startGogo(config, startServer) {
-		if (startServer) {
+		if (startServer && !gogoServer) {
 			var defaultResponseData = 'data\ng! ';
 
 			var handshakeBuffer = new Buffer([255, 251, 24, 255, 250, 24, 0, 86, 84, 50, 50, 48, 255, 240]);
 
-			gogoServer = net.createServer(function(socket) {
+			gogoServer = net.createServer({
+				allowHalfOpen: true
+			}, function(socket) {
 				socket.on('data', function(data) {
+					data = data.toString();
+
 					if (_.isEqual(data, handshakeBuffer)) {
 						socket.write('Welcome to Apache Felix Gogo\n');
 
@@ -216,10 +226,6 @@ describe('GogoShell', function() {
 					}
 					else if (data.indexOf('async') > -1) {
 						socket.write('chunk 1\n');
-
-						setTimeout(function() {
-							socket.write('chunk 2\n');
-						}, 150);
 
 						setTimeout(function() {
 							socket.write(defaultResponseData);
@@ -243,15 +249,14 @@ describe('GogoShell', function() {
 				});
 			});
 
-			gogoServer.listen({
-				host: '127.0.0.1',
-				port: 1337
-			});
+			gogoServer.listen(1337, '0.0.0.0');
 		}
 
 		gogoShell = new GogoShell({
 			debug: config.debug
 		});
+
+		gogoShell.setKeepAlive(true);
 
 		return gogoShell.connect(config);
 	}
@@ -259,16 +264,12 @@ describe('GogoShell', function() {
 	function stopGogo(done) {
 		if (gogoShell) {
 			gogoShell.end();
+
+			gogoShell.destroy();
 		}
 
-		if (gogoServer) {
-			gogoServer.close(done);
-		}
-		else {
-			done();
-		}
-
-		gogoServer = null;
 		gogoShell = null;
+
+		done();
 	}
 });
