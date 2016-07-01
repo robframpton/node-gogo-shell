@@ -16,6 +16,10 @@ const STR_NEWLINE = '\n';
 
 export default class GogoShell extends Socket {
 
+	static connect(config, options) {
+		return new GogoShell(options).connect(config);
+	}
+
 	constructor(config = {}) {
 		super(config);
 
@@ -36,7 +40,7 @@ export default class GogoShell extends Socket {
 
 			super.connect(config);
 
-			this.once('ready', resolve);
+			this.once('ready', () => resolve(this));
 		});
 	}
 
