@@ -46,7 +46,7 @@ export default class GogoShell extends Socket {
 
 	help(command) {
 		return new Promise((resolve, reject) => {
-			var parser = command ? this._parseHelpCommandData : this._parseHelpData;
+			const parser = command ? this._parseHelpCommandData : this._parseHelpData;
 
 			return this.sendCommand(command ? 'help ' + command : 'help')
 				.then(data => parser(data, command));
@@ -75,9 +75,9 @@ export default class GogoShell extends Socket {
 	}
 
 	_getCommandDataListener(resolve) {
-		var dataBuffer = [];
+		const dataBuffer = [];
 
-		var dataListener = (data) => {
+		const dataListener = (data) => {
 			data = data.toString();
 
 			dataBuffer.push(data);
@@ -96,7 +96,7 @@ export default class GogoShell extends Socket {
 	}
 
 	_onConnect() {
-		var dataListener = (data) => {
+		const dataListener = (data) => {
 			data = data.toString();
 
 			if (!this.ready && data.indexOf('g!') > -1) {
@@ -122,8 +122,9 @@ export default class GogoShell extends Socket {
 	}
 
 	_parseHelpCommandData(data, command) {
-		var currentGroup;
-		var groupRegex = /(flags|options|parameters|scope):\s*(\S*)/;
+		const groupRegex = /(flags|options|parameters|scope):\s*(\S*)/;
+
+		let currentGroup;
 
 		return _.reduce(data.split(STR_NEWLINE), (result, line, index) => {
 			if (index == 0) {
@@ -131,7 +132,7 @@ export default class GogoShell extends Socket {
 				result.raw = data;
 			}
 			else if (groupRegex.test(line)) {
-				var match = line.match(groupRegex);
+				const match = line.match(groupRegex);
 
 				currentGroup = match[1];
 
