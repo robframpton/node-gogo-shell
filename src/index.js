@@ -31,28 +31,30 @@ export default class GogoShell extends Socket {
 	}
 
 	connect(config) {
-		config = _.assign({}, DEFAULT_CONNECT_CONFIG, config);
-
-		super.connect(config);
-
 		return new Promise((resolve, reject) => {
+			config = _.assign({}, DEFAULT_CONNECT_CONFIG, config);
+
+			super.connect(config);
+
 			this.once('ready', resolve);
 		});
 	}
 
 	help(command) {
-		var parser = command ? this._parseHelpCommandData : this._parseHelpData;
+		return new Promise((resolve, reject) => {
+			var parser = command ? this._parseHelpCommandData : this._parseHelpData;
 
-		return this.sendCommand(command ? 'help ' + command : 'help')
-			.then(data => parser(data, command));
+			return this.sendCommand(command ? 'help ' + command : 'help')
+				.then(data => parser(data, command));
+		});
 	}
 
 	sendCommand(command) {
-		if (arguments.length > 1) {
-			command = _.join(arguments, ' ');
-		}
-
 		return new Promise((resolve, reject) => {
+			if (arguments.length > 1) {
+				command = _.join(arguments, ' ');
+			}
+
 			if (this.active) {
 				reject(new Error('Only one command can be sent at a time. "' + this.currentCommand + '" hasn\'t finished.'));
 			}
