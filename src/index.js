@@ -45,7 +45,7 @@ export default class GogoShell extends Socket {
 	}
 
 	help(command) {
-		return new Promise((resolve, reject) => {
+		return Promise.resolve().then(() => {
 			const parser = command ? this._parseHelpCommandData : this._parseHelpData;
 
 			return this.sendCommand(command ? 'help ' + command : 'help')
