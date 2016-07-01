@@ -31,14 +31,12 @@ export default class GogoShell extends Socket {
 	}
 
 	connect(config) {
-		var instance = this;
-
 		config = _.assign({}, DEFAULT_CONNECT_CONFIG, config);
 
 		super.connect(config);
 
-		return new Promise(function(resolve, reject) {
-			instance.once('ready', resolve);
+		return new Promise((resolve, reject) => {
+			this.once('ready', resolve);
 		});
 	}
 
@@ -46,49 +44,43 @@ export default class GogoShell extends Socket {
 		var parser = command ? this._parseHelpCommandData : this._parseHelpData;
 
 		return this.sendCommand(command ? 'help ' + command : 'help')
-			.then(function(data) {
-				return parser(data, command);
-			});
+			.then(data => parser(data, command));
 	}
 
 	sendCommand(command) {
-		var instance = this;
-
 		if (arguments.length > 1) {
 			command = _.join(arguments, ' ');
 		}
 
-		return new Promise(function(resolve, reject) {
-			if (instance.active) {
-				reject(new Error('Only one command can be sent at a time. "' + instance.currentCommand + '" hasn\'t finished.'));
+		return new Promise((resolve, reject) => {
+			if (this.active) {
+				reject(new Error('Only one command can be sent at a time. "' + this.currentCommand + '" hasn\'t finished.'));
 			}
 
-			instance.active = true;
-			instance.currentCommand = command;
+			this.active = true;
+			this.currentCommand = command;
 
-			instance.on(STR_DATA, instance._getCommandDataListener(resolve));
+			this.on(STR_DATA, this._getCommandDataListener(resolve));
 
 			command = _.endsWith(command, STR_NEWLINE) ? command : command + STR_NEWLINE;
 
-			instance.write(command);
+			this.write(command);
 		});
 	}
 
 	_getCommandDataListener(resolve) {
-		var instance = this;
-
 		var dataBuffer = [];
 
-		var dataListener = function(data) {
+		var dataListener = (data) => {
 			data = data.toString();
 
 			dataBuffer.push(data);
 
 			if (data.match(/g\!/)) {
-				instance.removeListener(STR_DATA, dataListener);
+				this.removeListener(STR_DATA, dataListener);
 
-				instance.active = false;
-				instance.currentCommand = null;
+				this.active = false;
+				this.currentCommand = null;
 
 				resolve(dataBuffer.join(''));
 			}
@@ -98,24 +90,22 @@ export default class GogoShell extends Socket {
 	}
 
 	_onConnect() {
-		var instance = this;
-
-		var dataListener = function(data) {
+		var dataListener = (data) => {
 			data = data.toString();
 
-			if (!instance.ready && data.indexOf('g!') > -1) {
-				instance.ready = true;
+			if (!this.ready && data.indexOf('g!') > -1) {
+				this.ready = true;
 
-				instance.removeListener(STR_DATA, dataListener);
+				this.removeListener(STR_DATA, dataListener);
 
-				instance.emit('ready');
+				this.emit('ready');
 			}
 		};
 
 		this.on(STR_DATA, dataListener);
 
 		if (this.debug) {
-			this.on(STR_DATA, function(data) {
+			this.on(STR_DATA, (data) => {
 				process.stdout.write(data.toString());
 			});
 		}
@@ -129,7 +119,7 @@ export default class GogoShell extends Socket {
 		var currentGroup;
 		var groupRegex = /(flags|options|parameters|scope):\s*(\S*)/;
 
-		return _.reduce(data.split(STR_NEWLINE), function(result, line, index) {
+		return _.reduce(data.split(STR_NEWLINE), (result, line, index) => {
 			if (index == 0) {
 				result.description = line;
 				result.raw = data;
@@ -157,7 +147,7 @@ export default class GogoShell extends Socket {
 	}
 
 	_parseHelpData(data) {
-		return _.reduce(data.split(STR_NEWLINE), function(commands, line, index) {
+		return _.reduce(data.split(STR_NEWLINE), (commands, line, index) => {
 			if (line.indexOf('g!') < 0) {
 				commands.push(_.trim(line));
 			}
