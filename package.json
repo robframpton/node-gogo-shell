@@ -3,7 +3,7 @@
   "version": "0.0.5",
   "description": "A Node wrapper for sending Gogo commands to an OSGi environment",
   "license": "MIT",
-  "main": "index.js",
+  "main": "lib/index.js",
   "author": "Rob Frampton <rob.g.frampton@gmail.com> (https://github.com/Robert-Frampton)",
   "repository": "Robert-Frampton/node-gogo-shell",
   "keywords": [
@@ -15,14 +15,17 @@
     "node": ">=0.10.0"
   },
   "scripts": {
+    "compile": "babel src --out-dir lib",
     "coveralls": "gulp coveralls",
-    "test": "gulp test"
+    "test": "npm run compile && gulp test"
   },
   "dependencies": {
     "bluebird": "^3.3.3",
     "lodash": "^4.6.1"
   },
   "devDependencies": {
+    "babel-cli": "^6.10.1",
+    "babel-preset-es2015": "^6.9.0",
     "chai": "^3.5.0",
     "gulp": "^3.9.1",
     "gulp-coveralls": "^0.1.4",
