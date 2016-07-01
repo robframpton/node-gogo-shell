@@ -2,7 +2,7 @@
 
 var _ = require('lodash');
 var chai = require('chai');
-var GogoShell = require('../index.js');
+var GogoShell = require('../lib/index.js').default;
 var net = require('net');
 var path = require('path');
 var sinon = require('sinon');
