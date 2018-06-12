@@ -41,7 +41,7 @@ GogoShell.prototype = _.create(Socket.prototype, {
 		Socket.prototype.connect.call(this, config);
 
 		return new Promise(function(resolve, reject) {
-			instance.once('ready', resolve);
+			instance.once('gogo-ready', resolve);
 		});
 	},
 
@@ -111,7 +111,7 @@ GogoShell.prototype = _.create(Socket.prototype, {
 
 				instance.removeListener(STR_DATA, dataListener);
 
-				instance.emit('ready');
+				instance.emit('gogo-ready');
 			}
 		};
 
@@ -123,9 +123,9 @@ GogoShell.prototype = _.create(Socket.prototype, {
 			});
 		}
 
-		this.write(new Buffer([255, 251, 24]));
+		this.write(Buffer.from([255, 251, 24]));
 
-		this.write(new Buffer([255, 250, 24, 0, 86, 84, 50, 50, 48, 255, 240]));
+		this.write(Buffer.from([255, 250, 24, 0, 86, 84, 50, 50, 48, 255, 240]));
 	},
 
 	_parseHelpCommandData: function(data, command) {
